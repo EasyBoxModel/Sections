@@ -6,32 +6,36 @@ use EBM\Field\Field;
 use EBM\Form\FormActionTrait;
 use EBM\ModelAdapters\UserAdapter as User;
 use EBM\UIApplication\AbstractUIApplication;
+use EBM\Exception\SectionException;
 
 abstract class AbstractBaseSection
 {
     use FormActionTrait;
 
     protected $fields = [];
-    protected $onPostActionString = '';
-    protected $slug = '';
+    protected $onPostActionString = null;
+    protected $slug = null;
 
     protected $uiApplication = null;
 
-    abstract public function setSlug();
     abstract public function setFields();
-    abstract public function setOnPostActionString();
 
     public function __construct(AbstractUIApplication $uiApplication)
     {
-        $this->setSlug();
+        if (!$this->hasSlug()) {
+            $class = get_class($this);
+            throw new SectionException("No slug defined for section [$class]");
+        }
+
         $this->setOnPostActionString();
+
         $this->setUiApplication($uiApplication);
     }
 
     public function setUIApplication(AbstractUIApplication $uiApplication)
     {
         $this->uiApplication = $uiApplication;
-        
+
         return $this;
     }
 
@@ -40,8 +44,20 @@ abstract class AbstractBaseSection
         return $this->uiApplication;
     }
 
+    public function hasSlug(): bool
+    {
+        return $this->slug != null;
+    }
+
     public function getSlug(): string
     {
         return $this->slug;
+    }
+
+    public function setOnPostActionString()
+    {
+        $this->onPostActionString = $this->getSlug();
+
+        return $this;
     }
 }

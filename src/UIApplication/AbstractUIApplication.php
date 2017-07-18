@@ -86,6 +86,16 @@ abstract class AbstractUIApplication
     }
 
     /**
+     * Returns the first section slug
+     *
+     * @return String slug
+     */
+    public function getFirstSectionSlug(): String
+    {
+        return $this->getSectionSlugs()[0];
+    }
+
+    /**
      * registerInstances
      *
      * Initializes the $_instances array with null service names that will become instantiated singletons on $this->getService($name)
@@ -100,7 +110,7 @@ abstract class AbstractUIApplication
 
         return $this;
     }
-    
+
     /**
      * instanceIsSet
      *

@@ -8,19 +8,7 @@ use EBM\Model\LuGender;
 
 class ExampleSection extends AbstractBaseSection
 {
-    public function setSlug()
-    {
-        $this->slug = 'example-section';
-
-        return $this;
-    }
-
-    public function setOnPostActionString()
-    {
-        $this->onPostActionString = $this->getSlug();
-
-        return $this;
-    }
+    protected $slug = 'example-section';
 
     public function setFields()
     {
