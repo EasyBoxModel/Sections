@@ -65,4 +65,26 @@ abstract class AbstractBaseSection
     {
         return $this;
     }
+
+    /**
+     * Loops through each section field and checks if the field has a valid value from DB
+     *
+     * @return Bool
+     */
+    public function isComplete(): bool
+    {
+        $fields = $this->getFields();
+
+        if (empty($fields)) {
+            return true;
+        }
+
+        foreach ($fields as $field) {
+            if (!$field->isComplete()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

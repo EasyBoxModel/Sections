@@ -158,4 +158,28 @@ abstract class AbstractUIApplication
     {
         return self::$_instances;
     }
+
+    /**
+     * Loops through each section and checks whether it is complete or not
+     * 
+     * @return Bool
+     */
+    public function isComplete(): bool
+    {
+        $sections = $this->getSections();
+
+        if (empty($sections)) {
+            return true;
+        }
+
+        foreach ($sections as $section) {
+            $section->setFields();
+
+            if (!$section->isComplete()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
