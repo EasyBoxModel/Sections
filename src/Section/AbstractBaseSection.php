@@ -87,4 +87,28 @@ abstract class AbstractBaseSection
 
         return true;
     }
+
+    /**
+     * Loops through each section and returns the incomplete section
+     *
+     * @return AbstractBaseSection
+     */
+    public function getPendingSection()
+    {
+        $sections = $this->getSections();
+
+        if (empty($sections)) {
+            return null;
+        }
+
+        foreach ($sections as $section) {
+            $section->setFields();
+
+            if (!$section->isComplete()) {
+                return $section;
+            }
+        }
+
+        return null;
+    }
 }
