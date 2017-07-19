@@ -5,6 +5,7 @@ namespace EBM\Form;
 use EBM\Field\Field;
 use EBM\Exception\FieldException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 
 trait FormActionTrait
 {
@@ -30,11 +31,11 @@ trait FormActionTrait
         return $this->fields;
     }
 
-    public function getField(String $alias): Field
+    public function getField(String $alias)
     {
         $fields = $this->getFields();
 
-        return $fields[$alias];
+        return isset($fields[$alias]) ? $fields[$alias] : null;
     }
 
     public function getOnPostActionString(): string
@@ -46,20 +47,26 @@ trait FormActionTrait
     {
         $data = request()->all();
 
-        if (isset($data['_token'])) {
-            array_shift($data);
-        }
-
         foreach ($data as $key => $value) {
             $field = $this->getField($key);
 
+            if (!$field) continue;
+
             try {
+
                 if (isset($value['key'])) {
                     $value = $value['key'];
                 }
 
                 $field->save($value);
+
+            } catch (QueryException $e) {
+                Log::critical($e->getMessage());
+                return $this->setError([
+                    'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
+                    ]);
             } catch (FieldException $e) {
+                Log::critical($e->getMessage());
                 return $this->setError([
                     'message' => $e->getMessage(),
                     ]);
@@ -70,6 +77,8 @@ trait FormActionTrait
                     ]);
             }
         }
+
+        return $this;
     }
 
     public function setError(Array $error)
