@@ -27,9 +27,9 @@ abstract class AbstractBaseSection
             throw new SectionException("No slug defined for section [$class]");
         }
 
-        $this->setOnPostActionString();
-
         $this->setUiApplication($uiApplication);
+
+        $this->setOnPostActionString();
     }
 
     public function setUIApplication(AbstractUIApplication $uiApplication)
