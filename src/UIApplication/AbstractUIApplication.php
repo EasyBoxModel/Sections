@@ -52,8 +52,12 @@ abstract class AbstractUIApplication
         return $this->sectionInstances;
     }
 
-    public function getSectionBySlug(String $slug)
+    public function getSectionBySlug(String $slug = null)
     {
+        if (!$slug) {
+            return null;
+        }
+
         $sections = $this->getSections();
 
         foreach ($sections as $section) {

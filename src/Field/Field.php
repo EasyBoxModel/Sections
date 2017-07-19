@@ -108,7 +108,7 @@ class Field
         return $this;
     }
 
-    public function getHint(): string
+    public function getHint()
     {
         return $this->hint;
     }
