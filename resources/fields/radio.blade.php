@@ -15,7 +15,7 @@
           type="{{ $field->getType() }}"
           class="{{ $field->getClass() }}"
           value="{{ old($name) ? old($name) : $option['key'] }}"
-          {{ ($option['key'] == $field->getValue()) ? 'checked' : '' }}
+          {{ ($option['key'] === $field->getValue()) ? 'checked' : '' }}
           {{ ($field->isRequired() && $loop->index == 0) ? 'required' : '' }}>
         <label for="{{ $id }}[{{ $option['key'] }}]">{{ $option['value'] }}</label>
       </article>
