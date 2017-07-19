@@ -12,9 +12,39 @@ abstract class AbstractBaseSection
 {
     use FormActionTrait;
 
+    /**
+     * Stores the section Field objects
+     * Array
+     */
     protected $fields = [];
+
+    /**
+     * Sets the POST method action for form elements
+     * string
+     */
     protected $onPostActionString = null;
+
+    /**
+     * The section URL slug
+     * String
+     */
     protected $slug = null;
+
+    /**
+     * The section template name
+     * Used in the getTemplate method
+     *
+     * String
+     */
+    protected $template = '';
+
+    /**
+     * The section template location in the views directory
+     * Used in the getTemplate method
+     *
+     * String
+     */
+    protected $templateLocation = '';
 
     protected $uiApplication = null;
 
@@ -66,6 +96,11 @@ abstract class AbstractBaseSection
         return $this;
     }
 
+    public function onEnter()
+    {
+        return $this;
+    }
+
     /**
      * Loops through each section field and checks if the field has a valid value from DB
      *
@@ -110,5 +145,10 @@ abstract class AbstractBaseSection
         }
 
         return null;
+    }
+
+    public function getTemplate(): String
+    {
+        return $this->templateLocation . '/' . $this->template;
     }
 }
