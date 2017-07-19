@@ -60,4 +60,9 @@ abstract class AbstractBaseSection
 
         return $this;
     }
+
+    public function onComplete()
+    {
+        return $this;
+    }
 }
