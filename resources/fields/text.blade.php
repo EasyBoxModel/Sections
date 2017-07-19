@@ -17,5 +17,7 @@
     <span class="help-block">
       <strong>{{ $errors->first($name) }}</strong>
     </span>
+  @else
+    <small class="help-block">{{ $field->getHint() }}</small>
   @endif
 </fieldset>
