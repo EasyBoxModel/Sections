@@ -217,24 +217,24 @@ class Field
     public function isComplete(): bool
     {
         if ($this->isRequired()) {
-            return $this->isEmpty();
+            return !$this->isEmpty();
         }
 
         return true;
     }
-    
+
     public function isEmpty(): bool
     {
         $value = $this->getValueFromDb();
 
-        if ($value == null ||
-            $value == -1 ||
-            $value == '' ||
-            $value == '-1' ||
+        if ($value === null ||
+            $value === -1 ||
+            $value === '' ||
+            $value === '-1' ||
             count($value) < 1) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 }
