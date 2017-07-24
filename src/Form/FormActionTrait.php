@@ -53,7 +53,7 @@ trait FormActionTrait
             if (!$field) continue;
 
             if (is_array($value)) {
-                if (count($value) > 1) {
+                if ($field->getType() == Field::TYPE_CHECKBOX) {
                     $this->saveCheckboxOptions($key, $value); continue;
                 }
 
