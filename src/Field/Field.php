@@ -244,6 +244,12 @@ class Field
             return $this;
         }
 
+        $valueExists = $this->getDividedStringValue($value) != '';
+
+        if ($valueExists) {
+            return $this;
+        }
+
         $previousValue = $model->$column;
 
         $model->$column = $previousValue . $this->getSeparator() . $value;
