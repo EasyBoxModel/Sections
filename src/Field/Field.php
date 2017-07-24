@@ -246,7 +246,7 @@ class Field
 
         $previousValue = $model->$column;
 
-        $model->$column = $previousValue . $this->separator . $value;
+        $model->$column = $previousValue . $this->getSeparator() . $value;
 
         $model->save();
 
@@ -288,5 +288,33 @@ class Field
         }
 
         return false;
+    }
+
+    /**
+     * [getDividedStringValue Parses the model column divided string and returns the value if it matches the provided option]
+     * @param  String $option [A string provided by the FormActionTrait saveCheckboxOptions method]
+     * @return [Field]
+     */
+    public function getDividedStringValue(String $option): string
+    {
+        $model = $this->getModel();
+
+        $column = $this->getName();
+
+        if ($this->isEmpty()) {
+            return null;
+        }
+
+        $dividedString = $model->$column;
+
+        $values = explode($this->getSeparator(), $dividedString);
+
+        foreach ($values as $key => $value) {
+            if ($value == $option) {
+                return $value;
+            }
+        }
+
+        return '';
     }
 }
