@@ -119,31 +119,31 @@ trait FormActionTrait
 
     public function saveCheckboxOptions(String $fieldName = '', Array $data = [])
     {
-        foreach ($data as $key => $value) {
-            $field = $this->getField($fieldName);
+        $field = $this->getField($fieldName);
 
-            if (!$field) continue;
+        if (!$field) {
+            return $this;
+        }
 
-            try {
+        try {
 
-                $field->saveAsDividedString((string) $value);
+            $field->saveAsDividedString($data);
 
-            } catch (QueryException $e) {
-                Log::critical($e->getMessage());
-                return $this->setError([
-                    'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
-                    ]);
-            } catch (FieldException $e) {
-                Log::critical($e->getMessage());
-                return $this->setError([
-                    'message' => $e->getMessage(),
-                    ]);
-            } catch (\Exception $e) {
-                Log::critical($e->getMessage());
-                return $this->setError([
-                    'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
-                    ]);
-            }
+        } catch (QueryException $e) {
+            Log::critical($e->getMessage());
+            return $this->setError([
+                'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
+                ]);
+        } catch (FieldException $e) {
+            Log::critical($e->getMessage());
+            return $this->setError([
+                'message' => $e->getMessage(),
+                ]);
+        } catch (\Exception $e) {
+            Log::critical($e->getMessage());
+            return $this->setError([
+                'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
+                ]);
         }
 
         return $this;

@@ -220,7 +220,7 @@ class Field
      * @param  String|string $value [A string from a values array defined in the FormActionTrait]
      * @return [Field]
      */
-    public function saveAsDividedString(String $value = '')
+    public function saveAsDividedString(Array $values = [])
     {
         $model = $this->getModel();
 
@@ -236,23 +236,7 @@ class Field
             throw new FieldException('No hemos podido guardar tus datos');
         }
 
-        if ($this->isEmpty()) {
-            $model->$column = $value;
-
-            $model->save();
-
-            return $this;
-        }
-
-        $valueExists = $this->getDividedStringValue($value) != '';
-
-        if ($valueExists) {
-            return $this;
-        }
-
-        $previousValue = $model->$column;
-
-        $model->$column = $previousValue . $this->getSeparator() . $value;
+        $model->$column = implode($this->getSeparator(), $values);
 
         $model->save();
 
@@ -308,7 +292,7 @@ class Field
         $column = $this->getName();
 
         if ($this->isEmpty()) {
-            return null;
+            return '';
         }
 
         $dividedString = $model->$column;
