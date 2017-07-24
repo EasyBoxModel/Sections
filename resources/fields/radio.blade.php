@@ -1,9 +1,9 @@
 <?php
-  $id = $field->getAlias() . '[key]';
+  $id = $field->getAlias();
   $name = $field->getAlias();
 ?>
 
-<fieldset class="form-group {{ $errors->has($name) ? ' has-danger' : '' }}">
+<fieldset class="form-group {{ $errors->has($name) ? 'has-danger' : '' }}">
   <label for="{{ $name }}">{{ $field->getLabel() }}</label>
 
   <div class="grid-list grid-list-2 grid-list-1-xs grid-list-1-sm">
@@ -11,7 +11,7 @@
       <article class="grid-list-item custom-radio-checkbox">
         <input
           id="{{ $id }}[{{ $option['key'] }}]"
-          name="{{ $name }}"
+          name="{{ $name }}[]"
           type="{{ $field->getType() }}"
           class="{{ $field->getClass() }}"
           value="{{ old($name) ? old($name) : $option['key'] }}"
