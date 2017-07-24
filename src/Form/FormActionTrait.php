@@ -52,13 +52,81 @@ trait FormActionTrait
 
             if (!$field) continue;
 
-            try {
-
-                if (isset($value['key'])) {
-                    $value = $value['key'];
+            if (is_array($value)) {
+                if (count($value) > 1) {
+                    $this->saveCheckboxOptions($key, $value); continue;
                 }
 
+                $this->saveRadioOption($key, $value); continue;
+            }
+
+            try {
+
                 $field->save($value);
+
+            } catch (QueryException $e) {
+                Log::critical($e->getMessage());
+                return $this->setError([
+                    'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
+                    ]);
+            } catch (FieldException $e) {
+                Log::critical($e->getMessage());
+                return $this->setError([
+                    'message' => $e->getMessage(),
+                    ]);
+            } catch (\Exception $e) {
+                Log::critical($e->getMessage());
+                return $this->setError([
+                    'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
+                    ]);
+            }
+        }
+
+        return $this;
+    }
+
+    public function saveRadioOption(String $fieldName = '', Array $data = [])
+    {
+        foreach ($data as $key => $value) {
+            $field = $this->getField($fieldName);
+
+            if (!$field) continue;
+
+            try {
+
+                $field->save($value);
+
+            } catch (QueryException $e) {
+                Log::critical($e->getMessage());
+                return $this->setError([
+                    'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
+                    ]);
+            } catch (FieldException $e) {
+                Log::critical($e->getMessage());
+                return $this->setError([
+                    'message' => $e->getMessage(),
+                    ]);
+            } catch (\Exception $e) {
+                Log::critical($e->getMessage());
+                return $this->setError([
+                    'message' => 'No hemos podido guardar tus datos. Intenta de nuevo.',
+                    ]);
+            }
+        }
+
+        return $this;
+    }
+
+    public function saveCheckboxOptions(String $fieldName = '', Array $data = [])
+    {
+        foreach ($data as $key => $value) {
+            $field = $this->getField($fieldName);
+
+            if (!$field) continue;
+
+            try {
+
+                $field->saveAsDividedString((string) $value);
 
             } catch (QueryException $e) {
                 Log::critical($e->getMessage());

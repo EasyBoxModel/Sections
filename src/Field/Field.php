@@ -17,6 +17,8 @@ class Field
     private $required = false;
     private $class = 'form-control form-control-lg';
 
+    private $separator = '|';
+
     private $model = null;
 
     const TYPE_TEXT = 'text';
@@ -28,6 +30,18 @@ class Field
     const TYPE_CHECKBOX = 'checkbox';
     const TYPE_NUMBER = 'number';
     const TYPE_HIDDEN = 'hidden';
+
+    public function setSeparator(String $separator)
+    {
+        $this->separator = $separator;
+
+        return $this;
+    }
+
+    public function getSeparator(): string
+    {
+        return $this->separator;
+    }
 
     public function setAlias(String $alias)
     {
@@ -195,6 +209,44 @@ class Field
         }
 
         $model->$column = $value;
+
+        $model->save();
+
+        return $this;
+    }
+
+    /**
+     * [saveAsDividedString Concatenates each value to the existing model column value with the set separator]
+     * @param  String|string $value [A string from a values array defined in the FormActionTrait]
+     * @return [Field]
+     */
+    public function saveAsDividedString(String $value = '')
+    {
+        $model = $this->getModel();
+
+        if (!$model) {
+            error_log('No field model specified');
+            throw new FieldException('No hemos podido guardar tus datos');
+        }
+
+        $column = $this->getName();
+
+        if (!$column) {
+            error_log('No field column specified');
+            throw new FieldException('No hemos podido guardar tus datos');
+        }
+
+        if ($this->isEmpty()) {
+            $model->$column = $value;
+
+            $model->save();
+
+            return $this;
+        }
+
+        $previousValue = $model->$column;
+
+        $model->$column = $previousValue . $this->separator . $value;
 
         $model->save();
 
