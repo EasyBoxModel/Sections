@@ -46,7 +46,18 @@ abstract class AbstractBaseSection
      */
     protected $templateLocation = '';
 
+    /**
+     * References the UIApplicationAdapter
+     * UApplicationAdapter
+     */
     protected $uiApplication = null;
+
+    /**
+     * The optional section view params
+     *
+     * Array [key => value]
+     */
+    protected $viewParams = [];
 
     abstract public function setFields();
 
@@ -150,5 +161,17 @@ abstract class AbstractBaseSection
     public function getTemplate(): String
     {
         return $this->templateLocation . '/' . $this->template;
+    }
+
+    public function setViewParams(Array $params = [])
+    {
+        $this->viewParams = array_merge($this->viewParams, $params);
+
+        return $this;
+    }
+
+    public function getViewParams(): Array
+    {
+        return $this->viewParams;
     }
 }
