@@ -52,6 +52,8 @@ trait FormActionTrait
 
             if (!$field) continue;
 
+            if ($field->isUnset()) continue;
+
             if (is_array($value)) {
                 if ($field->getType() == Field::TYPE_CHECKBOX) {
                     $this->saveCheckboxOptions($key, $value); continue;
@@ -60,9 +62,15 @@ trait FormActionTrait
                 $this->saveRadioOption($key, $value); continue;
             }
 
+            $field->setValue($value);
+
             try {
 
-                $field->save($value);
+                if ($field->hasSaveStrategy()) {
+                    $field->saveWithStrategy(); continue;
+                }
+
+                $field->save();
 
             } catch (QueryException $e) {
                 Log::critical($e->getMessage());
@@ -94,7 +102,7 @@ trait FormActionTrait
 
             try {
 
-                $field->save($value);
+                $field->setValue($value)->save();
 
             } catch (QueryException $e) {
                 Log::critical($e->getMessage());
@@ -127,7 +135,7 @@ trait FormActionTrait
 
         try {
 
-            $field->saveAsDividedString($data);
+            $field->setDividedStringValue($data)->save();
 
         } catch (QueryException $e) {
             Log::critical($e->getMessage());

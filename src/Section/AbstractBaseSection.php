@@ -163,6 +163,10 @@ abstract class AbstractBaseSection
         return $this->templateLocation . '/' . $this->template;
     }
 
+    /**
+     * Sets the section viewParams reachable from the templates
+     * @return self
+     */
     public function setViewParams(Array $params = [])
     {
         $this->viewParams = array_merge($this->viewParams, $params);
@@ -170,6 +174,10 @@ abstract class AbstractBaseSection
         return $this;
     }
 
+    /**
+     * Gets the section view params array
+     * @return self
+     */
     public function getViewParams(): Array
     {
         return $this->viewParams;
