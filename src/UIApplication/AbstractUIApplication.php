@@ -206,4 +206,40 @@ abstract class AbstractUIApplication
 
         return null;
     }
+
+    /**
+     * Inserts a section instance after an existing section instance
+     */
+    public function addSectionAfter(String $afterSection, String $newSection)
+    {
+        $slugs = $this->getSectionSlugs();
+
+        $sections = $this->getSections();
+
+        $afterSectionSlug = (new $afterSection($this))->getSlug();
+
+        $afterSectionPosition = array_search($afterSectionSlug, array_keys($sections));
+
+        $newSectionInstance = new $newSection($this);
+
+        $newSectionSlug = $newSectionInstance->getSlug();
+
+        $new[$newSectionSlug] = $newSectionInstance;
+
+        $newPosition = $afterSectionPosition + 1;
+
+        // Insert the new section after the pointer
+        array_splice($sections, $newPosition, 0, $new);
+
+        // Update the section slugs as well
+        array_splice($slugs, $newPosition, 0, $newSectionSlug);
+
+        // Set the name of the new pointer to the new section slug
+        $keys = array_keys($sections);
+        $keys[$newPosition] = $newSectionSlug;
+
+        $this->sectionInstances = array_combine($keys, $sections);
+
+        return $this;
+    }
 }

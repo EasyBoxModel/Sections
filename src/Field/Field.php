@@ -3,6 +3,7 @@
 namespace EBM\Field;
 
 use EBM\Exception\FieldException;
+use EBM\Field\Contract\SaveStrategyContract;
 
 class Field
 {
@@ -20,6 +21,16 @@ class Field
     private $separator = '|';
 
     private $model = null;
+
+    /**
+     * When calling the unset() method, this field will not have a save attempt
+     */
+    private $isUnset = false;
+
+    /**
+     * A class static method that implements a SaveStrategyContract
+     */
+    private $saveStrategy = null;
 
     const TYPE_TEXT = 'text';
     const TYPE_SELECT = 'select';
@@ -192,7 +203,7 @@ class Field
         return $this->setValue($value);
     }
 
-    public function save($value)
+    public function save()
     {
         $model = $this->getModel();
 
@@ -208,7 +219,7 @@ class Field
             throw new FieldException('No hemos podido guardar tus datos');
         }
 
-        $model->$column = $value;
+        $model->$column = $this->getValue();
 
         $model->save();
 
@@ -220,25 +231,9 @@ class Field
      * @param  String|string $value [A string from a values array defined in the FormActionTrait]
      * @return [Field]
      */
-    public function saveAsDividedString(Array $values = [])
+    public function setDividedStringValue(Array $values = [])
     {
-        $model = $this->getModel();
-
-        if (!$model) {
-            error_log('No field model specified');
-            throw new FieldException('No hemos podido guardar tus datos');
-        }
-
-        $column = $this->getName();
-
-        if (!$column) {
-            error_log('No field column specified');
-            throw new FieldException('No hemos podido guardar tus datos');
-        }
-
-        $model->$column = implode($this->getSeparator(), $values);
-
-        $model->save();
+        $this->setValue(implode($this->getSeparator(), $values));
 
         return $this;
     }
@@ -306,5 +301,65 @@ class Field
         }
 
         return '';
+    }
+
+    /**
+     * Avoid saving this field
+     */
+    public function unset()
+    {
+        $this->isUnset = true;
+
+        return $this;
+    }
+
+    /**
+     * Determines if the Field should be saved
+     */
+    public function isUnset(): bool
+    {
+        return $this->isUnset;
+    }
+
+    /**
+     * The Field has a save strategy, then apply the strategy
+     */
+    public function hasSaveStrategy(): bool
+    {
+        return $this->saveStrategy != null;
+    }
+
+    /**
+     * Sets a SaveStrategyContract implementation
+     *
+     * @param Array [SaveStrategy::class, method]
+     */
+    public function setSaveStrategy(Array $strategy)
+    {
+        $this->saveStrategy = $strategy;
+
+        return $this;
+    }
+
+    /**
+     * Gets a SaveStrategyContract to apply to the field
+     *
+     * @return Array [SaveStrategy, method]
+     */
+    public function getSaveStrategy(): Array
+    {
+        return $this->saveStrategy;
+    }
+
+    /**
+     * Applies a SaveStrategyContract method
+     *
+     * @return Field
+     */
+    public function saveWithStrategy()
+    {
+        $saveStrategy = $this->saveStrategy;
+
+        return $saveStrategy($this);
     }
 }
