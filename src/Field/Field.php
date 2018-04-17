@@ -17,6 +17,8 @@ class Field
     private $placeholder = '';
     private $required = false;
     private $class = 'form-control form-control-lg';
+    private $labelClass = '';
+    private $hideLabel = false;
 
     private $separator = '|';
 
@@ -273,6 +275,18 @@ class Field
         }
 
         return false;
+    }
+
+    public function getLabelClass()
+    {
+        return $this->labelClass;
+    }
+
+    public function setLabelClass(String $class): self
+    {
+        $this->labelClass = $class;
+
+        return $this;
     }
 
     /**

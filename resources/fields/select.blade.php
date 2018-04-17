@@ -3,7 +3,7 @@
 ?>
 
 <fieldset class="form-group {{ $errors->has($name) ? 'has-danger' : '' }}">
-  <label for="{{ $name }}">{{ $field->getLabel() }}</label>
+  <label for="{{ $name }}" class="{{ $field->getLabelClass() }}">{{ $field->getLabel() }}</label>
   <select
     id="{{ $name }}"
     name="{{ $name }}"
